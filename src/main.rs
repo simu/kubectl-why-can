@@ -65,14 +65,14 @@ impl Cli {
             .map(|e| e.to_string())
             .collect::<Vec<String>>();
         let (resource, group) = resparts
-            .split_last()
+            .split_first()
             .ok_or(anyhow!("Can't split resource and group: {}", self.resource))?;
         let group = if group.len() > 0 {
             group.join(".")
         } else {
             "".to_string()
         };
-        return Ok((group, resource.clone()));
+        return Ok((resource.clone(), group));
     }
 }
 
@@ -85,7 +85,7 @@ async fn main() -> anyhow::Result<()> {
 
     let client = create_client().await?;
 
-    let (group, resource) = args.parse_resource()?;
+    let (resource, group) = args.parse_resource()?;
 
     let sar_data = create_self_subject_access_review(
         Some(group),

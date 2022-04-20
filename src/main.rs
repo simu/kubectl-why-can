@@ -93,7 +93,7 @@ async fn main() -> anyhow::Result<()> {
         args.namespace,
         Some(resource),
         None,
-        Some(args.verb),
+        Some(args.verb.clone()),
         None,
     );
     let sar: Api<SelfSubjectAccessReview> = Api::all(client);
@@ -104,7 +104,7 @@ async fn main() -> anyhow::Result<()> {
         let reason = resp_status.reason.unwrap_or("No reason given".to_string());
         println!("Access allowed: {}", reason)
     } else {
-        println!("denied")
+        println!("{} {} not allowed", args.verb, args.resource)
     }
 
     Ok(())

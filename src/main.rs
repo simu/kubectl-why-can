@@ -7,8 +7,7 @@ use k8s_openapi::api::authorization::v1::{
 
 use kube::{api::ObjectMeta, client::ConfigExt, Api, Client, Config};
 
-async fn create_client() -> anyhow::Result<Client> {
-    let config = Config::infer().await?;
+fn create_client(config: Config) -> anyhow::Result<Client> {
     let https = config.openssl_https_connector()?;
     let service = tower::ServiceBuilder::new()
         .layer(config.base_uri_layer())
@@ -57,6 +56,9 @@ struct Cli {
     /// Namespace for SelfSubjectAccessReview
     #[clap(short = 'n', long = "namespace")]
     namespace: Option<String>,
+    /// All namespaces
+    #[clap(short = 'A', long = "all-namespaces")]
+    all_namespaces: bool,
 }
 
 impl Cli {
@@ -89,14 +91,25 @@ async fn main() -> anyhow::Result<()> {
         return Err(anyhow!("Currently, only `i` is supported as principal."));
     }
 
-    let client = create_client().await?;
+    let config = Config::infer().await?;
+    let client = create_client(config.clone())?;
 
     let (resource, group) = args.parse_resource()?;
+
+    // Configure namespace to perform the SelfSubjectAccessReview for
+    let ns = if args.all_namespaces {
+        Some("*".to_string())
+    } else if let Some(n) = args.namespace {
+        Some(n.clone())
+    } else {
+        // use current context namespace
+        Some(config.default_namespace.clone())
+    };
 
     let sar_data = create_self_subject_access_review(
         Some(group),
         args.name,
-        args.namespace,
+        ns,
         Some(resource),
         None,
         Some(args.verb.clone()),

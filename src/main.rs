@@ -46,6 +46,8 @@ fn create_self_subject_access_review(
 
 #[derive(Parser, Debug)]
 struct Cli {
+    /// Principal for SubjectAccessReview. Currently only `i` is supported
+    principal: String,
     /// Verb for SelfSubjectAccessReview
     verb: String,
     /// Resource for SelfSubjectAccessReview
@@ -82,6 +84,10 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
     let args = Cli::parse();
+
+    if args.principal != "i" {
+        return Err(anyhow!("Currently, only `i` is supported as principal."));
+    }
 
     let client = create_client().await?;
 

@@ -71,11 +71,7 @@ impl Cli {
         let (resource, group) = resparts
             .split_first()
             .ok_or(anyhow!("Can't split resource and group: {}", self.resource))?;
-        let group = if group.len() > 0 {
-            group.join(".")
-        } else {
-            "".to_string()
-        };
+        let group = group.join(".");
         return Ok((resource.clone(), group));
     }
 }

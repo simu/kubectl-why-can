@@ -8,7 +8,7 @@ use k8s_openapi::api::authorization::v1::{
 use kube::{api::ObjectMeta, client::ConfigExt, Api, Client, Config};
 
 fn create_client(config: Config) -> anyhow::Result<Client> {
-    let https = config.openssl_https_connector()?;
+    let https = config.rustls_https_connector()?;
     let service = tower::ServiceBuilder::new()
         .layer(config.base_uri_layer())
         .option_layer(config.auth_layer()?)

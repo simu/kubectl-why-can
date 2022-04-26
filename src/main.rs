@@ -44,15 +44,16 @@ fn create_self_subject_access_review(
 }
 
 #[derive(Parser, Debug)]
+#[clap(name = "kubectl-why-can")]
+#[clap(bin_name = "kubectl-why-can")]
+#[clap(version)]
 struct Cli {
     /// Principal for SubjectAccessReview. Currently only `i` is supported
     principal: String,
     /// Verb for SelfSubjectAccessReview
     verb: String,
-    /// Resource for SelfSubjectAccessReview
+    /// Resource (or Resource/Name) for SelfSubjectAccessReview
     resource: String,
-    /// Resource name for SelfSubjectAccessReview
-    name: Option<String>,
     /// Namespace for SelfSubjectAccessReview
     #[clap(short = 'n', long = "namespace")]
     namespace: Option<String>,
@@ -62,9 +63,24 @@ struct Cli {
 }
 
 impl Cli {
-    fn parse_resource(&self) -> anyhow::Result<(String, String)> {
-        let resparts = self
+    fn parse_resource(&self) -> anyhow::Result<(String, String, String)> {
+        let resname = self
             .resource
+            .split('/')
+            .map(|e| e.to_string())
+            .collect::<Vec<String>>();
+        if resname.len() > 2 {
+            return Err(anyhow!(
+                "Expected only resource type or RESOURCE/NAME, got {}",
+                self.resource
+            ));
+        }
+        let name = if resname.len() > 1 {
+            resname[1].clone()
+        } else {
+            "".to_string()
+        };
+        let resparts = resname[0]
             .split(".")
             .map(|e| e.to_string())
             .collect::<Vec<String>>();
@@ -72,7 +88,7 @@ impl Cli {
             .split_first()
             .ok_or(anyhow!("Can't split resource and group: {}", self.resource))?;
         let group = group.join(".");
-        return Ok((resource.clone(), group));
+        return Ok((resource.clone(), name, group));
     }
 }
 
@@ -90,7 +106,7 @@ async fn main() -> anyhow::Result<()> {
     let config = Config::infer().await?;
     let client = create_client(config.clone())?;
 
-    let (resource, group) = args.parse_resource()?;
+    let (resource, name, group) = args.parse_resource()?;
 
     // Configure namespace to perform the SelfSubjectAccessReview for
     let ns = if args.all_namespaces {
@@ -104,7 +120,7 @@ async fn main() -> anyhow::Result<()> {
 
     let sar_data = create_self_subject_access_review(
         Some(group),
-        args.name,
+        Some(name),
         ns,
         Some(resource),
         None,

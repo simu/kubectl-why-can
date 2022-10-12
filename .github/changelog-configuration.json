@@ -2,16 +2,16 @@
     "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
     "categories": [
         {
+            "title": "## 🔎 Breaking Changes",
+            "labels": ["breaking"]
+        },
+        {
             "title": "## 🚀 Features",
             "labels": ["enhancement", "feature"]
         },
         {
             "title": "## 🛠️ Minor Changes",
             "labels": ["change"]
-        },
-        {
-            "title": "## 🔎 Breaking Changes",
-            "labels": ["breaking"]
         },
         {
             "title": "## 🐛 Fixes",

@@ -30,6 +30,8 @@ jobs:
             ~/.cargo/registry
             target
           key: rust-build-${{ runner.os }}-${{ matrix.target }}-${{ hashFiles('Cargo.lock') }}
+      - name: Install musl tools
+        run: sudo apt-get install -y musl-tools
       - name: Run tests
         uses: actions-rs/cargo@v1
         with:

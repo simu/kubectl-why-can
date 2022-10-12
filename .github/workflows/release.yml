@@ -31,7 +31,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          use-cross: true
+          use-cross: ${{ matrix.target != 'x86_64-unknown-linux-musl' }}
           args: --release --target ${{ matrix.target }}
       - name: Upload binary artifact
         uses: actions/upload-artifact@v3

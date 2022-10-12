@@ -25,7 +25,9 @@ jobs:
       - name: Cache rust build
         uses: actions/cache@v3
         with:
-          path: target
+          path: |
+            target
+            ~/.cargo/registry
           key: rust-build-${{ runner.os }}-${{ matrix.target }}-${{ hashFiles('Cargo.lock') }}
       - name: Build binary
         uses: actions-rs/cargo@v1

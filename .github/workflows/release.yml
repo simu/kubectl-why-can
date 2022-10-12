@@ -109,11 +109,13 @@ jobs:
           path: binaries
       - name: Finalize binaries for release
         run: |
-          chmod +x binaries/*
-          strip binaries/*
+          mv binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can kubectl-why-can-linux-x86_64
+          mv binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can kubectl-why-can-linux-aarch64
+          chmod +x ./kubectl-why-can*
+          strip ./kubectl-why-can*
       - name: Upload binaries to release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            binaries/kubectl-why-can-x86_64-unknown-linux-musl
-            binaries/kubectl-why-can-aarch64-unknown-linux-musl
+            kubectl-why-can-linux-x86_64
+            kubectl-why-can-linux-aarch64

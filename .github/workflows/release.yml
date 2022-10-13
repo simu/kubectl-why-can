@@ -105,8 +105,8 @@ jobs:
         run: |
           chmod +x binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
           chmod +x binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
-          tar czf --strip-components 2 kubectl-why-can-x86_64.tar.gz kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
-          tar czf --strip-components 2 kubectl-why-can-aarch64.tar.gz kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
+          tar --strip-components 2 -czf kubectl-why-can-x86_64.tar.gz binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
+          tar --strip-components 2 -czf kubectl-why-can-aarch64.tar.gz binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
@@ -121,8 +121,8 @@ jobs:
 
             ## Binaries
 
-            * [Linux x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-x86_64.tar.gz)
-            * [Linux aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-aarch64.tar.gz)
+            * [Linux x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-x86_64.tar.gz)
+            * [Linux aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-aarch64.tar.gz)
           prerelease: "${{ contains(github.ref, '-rc') || contains(github.ref, '-dev') }}"
           # Ensure target branch for release is "master"
           commit: master

@@ -121,8 +121,8 @@ jobs:
 
             ## Binaries
 
-            * [Linux x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-x86_64.tar.gz)
-            * [Linux aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-aarch64.tar.gz)
+            * [Linux x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-x86_64.tar.gz)
+            * [Linux aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-aarch64.tar.gz)
           prerelease: "${{ contains(github.ref, '-rc') || contains(github.ref, '-dev') }}"
           # Ensure target branch for release is "master"
           commit: master

@@ -97,26 +97,34 @@ jobs:
           echo "::set-output name=message::${TAG_MSG}"
         env:
           GITHUB_REF: ${{ github.ref }}
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          body: "# Summary\n\n${{steps.tag_message.outputs.message}}\n\n# Changes\n\n${{steps.build_changelog.outputs.changelog}}"
-          prerelease: "${{ contains(github.ref, '-rc') }}"
-          # Ensure target branch for release is "master"
-          commit: master
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Download all binaries
         uses: actions/download-artifact@v3
         with:
           path: binaries
       - name: Finalize binaries for release
         run: |
-          mv binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can kubectl-why-can-linux-x86_64
-          mv binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can kubectl-why-can-linux-aarch64
-          chmod +x ./kubectl-why-can*
-      - name: Upload binaries to release
-        uses: softprops/action-gh-release@v1
+          chmod +x binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
+          chmod +x binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
+          tar czf --strip-components 2 kubectl-why-can-x86_64.tar.gz kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
+          tar czf --strip-components 2 kubectl-why-can-aarch64.tar.gz kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
+      - name: Create Release
+        uses: ncipollo/release-action@v1
         with:
-          files: |
-            kubectl-why-can-linux-x86_64
-            kubectl-why-can-linux-aarch64
+          body: |
+            ## Summary
+
+            ${{steps.tag_message.outputs.message}}
+
+            ## Changes
+
+            ${{steps.build_changelog.outputs.changelog}}
+
+            ## Binaries
+
+            * [Linux x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-x86_64.tar.gz)
+            * [Linux aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-aarch64.tar.gz)
+          prerelease: "${{ contains(github.ref, '-rc') || contains(github.ref, '-dev') }}"
+          # Ensure target branch for release is "master"
+          commit: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "kubectl-why-can-x86_64.tar.gz,kubectl-why-can-aarch64.tar.gz"

@@ -2,27 +2,27 @@
     "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
     "categories": [
         {
-            "title": "## 🔎 Breaking Changes",
+            "title": "### 🔎 Breaking Changes",
             "labels": ["breaking"]
         },
         {
-            "title": "## 🚀 Features",
+            "title": "### 🚀 Features",
             "labels": ["enhancement", "feature"]
         },
         {
-            "title": "## 🛠️ Minor Changes",
+            "title": "### 🛠️ Minor Changes",
             "labels": ["change"]
         },
         {
-            "title": "## 🐛 Fixes",
+            "title": "### 🐛 Fixes",
             "labels": ["bug", "fix"]
         },
         {
-            "title": "## 📄 Documentation",
+            "title": "### 📄 Documentation",
             "labels": ["documentation"]
         },
         {
-            "title": "## 🔗 Dependency Updates",
+            "title": "### 🔗 Dependency Updates",
             "labels": ["dependency"]
         }
     ],

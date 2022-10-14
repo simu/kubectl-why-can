@@ -7,7 +7,7 @@ on:
       - v*
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -43,10 +43,45 @@ jobs:
           name: kubectl-why-can-${{ matrix.target }}
           path: target/${{ matrix.target }}/release/kubectl-why-can
           retention-days: 7
+  build-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          target: ${{ matrix.target }}
+      - name: Cache rust build
+        uses: actions/cache@v3
+        with:
+          path: |
+            target
+            ~/.cargo/registry
+          key: rust-build-${{ runner.os }}-${{ matrix.target }}-${{ hashFiles('Cargo.lock') }}
+      - name: Build binary
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }}
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: kubectl-why-can-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/kubectl-why-can
+          retention-days: 7
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
+    needs:
+      - build-linux
+      - build-macos
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -105,8 +140,13 @@ jobs:
         run: |
           chmod +x binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
           chmod +x binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
-          tar --strip-components 2 -czf kubectl-why-can-x86_64.tar.gz binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
-          tar --strip-components 2 -czf kubectl-why-can-aarch64.tar.gz binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
+          chmod +x binaries/kubectl-why-can-x86_64-apple-darwin/kubectl-why-can
+          chmod +x binaries/kubectl-why-can-aarch64-apple-darwin/kubectl-why-can
+          tar --strip-components 2 -czf kubectl-why-can-linux-x86_64.tar.gz binaries/kubectl-why-can-x86_64-unknown-linux-musl/kubectl-why-can
+          tar --strip-components 2 -czf kubectl-why-can-linux-aarch64.tar.gz binaries/kubectl-why-can-aarch64-unknown-linux-musl/kubectl-why-can
+          zip -j kubectl-why-can-macos-x86_64.zip binaries/kubectl-why-can-x86_64-apple-darwin/kubectl-why-can
+          zip -j kubectl-why-can-macos-aarch64.zip binaries/kubectl-why-can-aarch64-apple-darwin/kubectl-why-can
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
@@ -121,10 +161,12 @@ jobs:
 
             ## Binaries
 
-            * [Linux x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-x86_64.tar.gz)
-            * [Linux aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-aarch64.tar.gz)
+            * [Linux x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-x86_64.tar.gz)
+            * [Linux aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-linux-aarch64.tar.gz)
+            * [macOS x86_64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-macos-x86_64.zip)
+            * [macOS aarch64](https://github.com/simu/kubectl-why-can/releases/download/${{ steps.git_version.outputs.version }}/kubectl-why-can-macos-aarch64.zip)
           prerelease: "${{ contains(github.ref, '-rc') || contains(github.ref, '-dev') }}"
           # Ensure target branch for release is "master"
           commit: master
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "kubectl-why-can-x86_64.tar.gz,kubectl-why-can-aarch64.tar.gz"
+          artifacts: "kubectl-why-can-linux-x86_64.tar.gz,kubectl-why-can-linux-aarch64.tar.gz,kubectl-why-can-macos-x86_64.zip,kubectl-why-can-macos-aarch64.zip"

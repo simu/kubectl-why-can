@@ -6,5 +6,11 @@
   ],
   "labels": [
     "dependency"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["kube", "kube-derive"],
+      "groupName": "Kubernetes client libraries"
+    }
   ]
 }

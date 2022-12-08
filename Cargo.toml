@@ -9,7 +9,7 @@ edition = "2021"
 anyhow = "1.0.66"
 clap = { version = "4.0", features = ["derive"] }
 hyper = { version = "0.14.23" }
-hyper-rustls = { version = "0.23.1" }
+hyper-rustls = { version = "0.23.2" }
 k8s-openapi = { version = "0.16.0", default-features = false, features=["v1_21"] }
 kube = { version = "0.76.0", default-features = false, features = ["client", "rustls-tls"]}
 kube-derive = { version = "0.76.0"}

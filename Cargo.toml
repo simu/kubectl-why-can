@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.68"
+anyhow = "1.0.69"
 clap = { version = "4.1", features = ["derive"] }
 hyper = { version = "0.14.23" }
 hyper-rustls = { version = "0.23.2" }

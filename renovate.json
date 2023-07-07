@@ -9,7 +9,7 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["kube", "kube-derive"],
+      "matchPackageNames": ["kube", "kube-derive", "k8s-openapi"],
       "groupName": "Kubernetes client libraries"
     }
   ]

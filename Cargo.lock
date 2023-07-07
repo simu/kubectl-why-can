@@ -547,7 +547,7 @@ dependencies = [
  "rustls 0.21.1",
  "rustls-native-certs",
  "tokio",
- "tokio-rustls 0.24.0",
+ "tokio-rustls 0.24.1",
 ]
 
 [[package]]
@@ -752,7 +752,7 @@ dependencies = [
  "kube",
  "kube-derive",
  "tokio",
- "tokio-rustls 0.23.4",
+ "tokio-rustls 0.24.1",
  "tower",
  "tower-http 0.3.5",
  "tracing-subscriber",
@@ -1409,9 +1409,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-rustls"
-version = "0.24.0"
+version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0d409377ff5b1e3ca6437aa86c1eb7d40c134bfec254e44c830defa92669db5"
+checksum = "c28327cf380ac148141087fbfb9de9d7bd4e84ab5d2c28fbc911d753de8a7081"
 dependencies = [
  "rustls 0.21.1",
  "tokio",

@@ -11,6 +11,10 @@
     {
       "matchPackageNames": ["kube", "kube-derive", "k8s-openapi"],
       "groupName": "Kubernetes client libraries"
+    },
+    {
+      "matchPackagePatterns": ["-rustls$"],
+      "groupName": "rustls"
     }
   ]
 }

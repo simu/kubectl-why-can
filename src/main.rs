@@ -12,6 +12,7 @@ fn create_client(config: Config) -> anyhow::Result<Client> {
     let service = tower::ServiceBuilder::new()
         .layer(config.base_uri_layer())
         .option_layer(config.auth_layer()?)
+        .layer(config.extra_headers_layer()?)
         .service(hyper::Client::builder().build(https));
     Ok(Client::new(service, config.default_namespace))
 }
@@ -60,6 +61,12 @@ struct Cli {
     /// All namespaces
     #[clap(short = 'A', long = "all-namespaces")]
     all_namespaces: bool,
+    /// User to impersonate for the SelfSubjectAccessReview
+    #[clap(long = "as")]
+    impersonate: Option<String>,
+    /// List of groups to impersonate for the SelfSubjectAccessReview
+    #[clap(long = "as-group")]
+    impersonate_groups: Option<Vec<String>>,
 }
 
 impl Cli {
@@ -103,7 +110,14 @@ async fn main() -> anyhow::Result<()> {
         return Err(anyhow!("Currently, only `i` is supported as principal."));
     }
 
-    let config = Config::infer().await?;
+    let mut config = Config::infer().await?;
+    if args.impersonate_groups.is_some() && args.impersonate.is_none() {
+        return Err(anyhow!("--as-group is set, but --as is not set"));
+    }
+    if args.impersonate.is_some() {
+        config.auth_info.impersonate = args.impersonate.clone();
+        config.auth_info.impersonate_groups = args.impersonate_groups.clone();
+    }
     let client = create_client(config.clone())?;
 
     let (resource, name, group) = args.parse_resource()?;

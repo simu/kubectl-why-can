@@ -7,6 +7,13 @@
   "labels": [
     "dependency"
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "automergeType": "pr",
+    "platformAutomerge": true,
+    "labels": ["ignore"]
+  },
   "packageRules": [
     {
       "matchPackageNames": ["kube", "kube-derive", "k8s-openapi"],

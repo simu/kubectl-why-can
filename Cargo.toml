@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.69"
-clap = { version = "4.1", features = ["derive"] }
+clap = { version = "4.3", features = ["derive"] }
 hyper = { version = "0.14.24" }
 hyper-rustls = { version = "0.23.2" }
 k8s-openapi = { version = "0.18.0", default-features = false, features=["v1_21"] }

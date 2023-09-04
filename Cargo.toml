@@ -16,5 +16,5 @@ kube-derive = { version = "0.85.0"}
 tokio = { version = "1.32.0", features = ["full"] }
 tokio-rustls = "0.24.1"
 tower = { version = "0.4.13", features = ["limit"] }
-tower-http = { version = "0.4.3", features = ["trace", "decompression-gzip"] }
+tower-http = { version = "0.4.4", features = ["trace", "decompression-gzip"] }
 tracing-subscriber = "0.3.17"

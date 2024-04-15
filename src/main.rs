@@ -106,6 +106,9 @@ async fn main() -> anyhow::Result<()> {
     std::env::set_var("RUST_LOG", "info,kube=trace");
     tracing_subscriber::fmt::init();
 
+    // set process-wide default crypto provider to the rustls aws-lc implementation.
+    let _ = tokio_rustls::rustls::crypto::aws_lc_rs::default_provider().install_default();
+
     let args = Cli::parse();
 
     if args.principal != "i" {

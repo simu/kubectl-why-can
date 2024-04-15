@@ -1,6 +1,8 @@
 use anyhow::anyhow;
 use clap::Parser;
 
+use hyper_util::rt::TokioExecutor;
+
 use k8s_openapi::api::authorization::v1::{
     ResourceAttributes, SelfSubjectAccessReview, SelfSubjectAccessReviewSpec,
 };
@@ -13,7 +15,7 @@ fn create_client(config: Config) -> anyhow::Result<Client> {
         .layer(config.base_uri_layer())
         .option_layer(config.auth_layer()?)
         .layer(config.extra_headers_layer()?)
-        .service(hyper::Client::builder().build(https));
+        .service(hyper_util::client::legacy::Client::builder(TokioExecutor::new()).build(https));
     Ok(Client::new(service, config.default_namespace))
 }
 

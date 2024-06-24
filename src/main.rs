@@ -7,6 +7,8 @@ use k8s_openapi::api::authorization::v1::{
 
 use kube::{api::ObjectMeta, Api, Client, Config};
 
+use tracing_subscriber::{prelude::*, EnvFilter};
+
 fn create_self_subject_access_review(
     group: Option<String>,
     name: Option<String>,
@@ -91,8 +93,10 @@ impl Cli {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    std::env::set_var("RUST_LOG", "info,kube=trace");
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .with(EnvFilter::from_env("KUBECTL_WHY_CAN_LOG"))
+        .init();
 
     // set process-wide default crypto provider to the rustls aws-lc implementation.
     let _ = tokio_rustls::rustls::crypto::aws_lc_rs::default_provider().install_default();

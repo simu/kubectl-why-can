@@ -1,23 +1,11 @@
 use anyhow::anyhow;
 use clap::Parser;
 
-use hyper_util::rt::TokioExecutor;
-
 use k8s_openapi::api::authorization::v1::{
     ResourceAttributes, SelfSubjectAccessReview, SelfSubjectAccessReviewSpec,
 };
 
-use kube::{api::ObjectMeta, client::ConfigExt, Api, Client, Config};
-
-fn create_client(config: Config) -> anyhow::Result<Client> {
-    let https = config.rustls_https_connector()?;
-    let service = tower::ServiceBuilder::new()
-        .layer(config.base_uri_layer())
-        .option_layer(config.auth_layer()?)
-        .layer(config.extra_headers_layer()?)
-        .service(hyper_util::client::legacy::Client::builder(TokioExecutor::new()).build(https));
-    Ok(Client::new(service, config.default_namespace))
-}
+use kube::{api::ObjectMeta, Api, Client, Config};
 
 fn create_self_subject_access_review(
     group: Option<String>,
@@ -123,7 +111,7 @@ async fn main() -> anyhow::Result<()> {
         config.auth_info.impersonate = args.impersonate.clone();
         config.auth_info.impersonate_groups = args.impersonate_groups.clone();
     }
-    let client = create_client(config.clone())?;
+    let client = Client::try_from(config.clone())?;
 
     let (resource, name, group) = args.parse_resource()?;
 

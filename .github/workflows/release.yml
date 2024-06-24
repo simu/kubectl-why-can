@@ -11,32 +11,35 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target:
-          - x86_64-unknown-linux-musl
-          - aarch64-unknown-linux-musl
+        include:
+          - target: x86_64-unknown-linux-musl
+            command: cargo
+          - target: aarch64-unknown-linux-musl
+            command: cross
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
+        id: toolchain
         with:
-          toolchain: stable
-          profile: minimal
-          target: ${{ matrix.target }}
+          targets: ${{ matrix.target }}
+      - name: Install cross
+        if: matrix.command == 'cross'
+        shell: bash
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall --no-confirm cross
       - name: Cache rust build
         uses: actions/cache@v4
         with:
           path: |
             target
             ~/.cargo/registry
-          key: rust-build-${{ runner.os }}-${{ matrix.target }}-${{ hashFiles('Cargo.lock') }}
+          key: rust-build-${{ runner.os }}-${{ matrix.target }}-${{ steps.toolchain.outputs.cachekey }}-${{ hashFiles('Cargo.lock') }}
       - name: Install musl tools
         run: sudo apt-get install -y musl-tools
       - name: Build binary
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          use-cross: ${{ matrix.target != 'x86_64-unknown-linux-musl' }}
-          args: --release --target ${{ matrix.target }}
+        run: ${{ matrix.command }} build --release --locked --target ${{ matrix.target }}
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
@@ -53,23 +56,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
+        id: toolchain
         with:
-          toolchain: stable
-          profile: minimal
-          target: ${{ matrix.target }}
+          targets: ${{ matrix.target }}
       - name: Cache rust build
         uses: actions/cache@v4
         with:
           path: |
             target
             ~/.cargo/registry
-          key: rust-build-${{ runner.os }}-${{ matrix.target }}-${{ hashFiles('Cargo.lock') }}
+          key: rust-build-${{ runner.os }}-${{ matrix.target }}-${{ steps.toolchain.outputs.cachekey }}-${{ hashFiles('Cargo.lock') }}
       - name: Build binary
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target ${{ matrix.target }}
+        run: cargo build --release --locked --target ${{ matrix.target }}
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:

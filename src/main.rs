@@ -2,7 +2,8 @@ use anyhow::anyhow;
 use clap::Parser;
 
 use k8s_openapi::api::authorization::v1::{
-    ResourceAttributes, SelfSubjectAccessReview, SelfSubjectAccessReviewSpec,
+    FieldSelectorAttributes, LabelSelectorAttributes, ResourceAttributes, SelfSubjectAccessReview,
+    SelfSubjectAccessReviewSpec,
 };
 
 use kube::{api::ObjectMeta, Api, Client, Config};
@@ -17,6 +18,8 @@ fn create_self_subject_access_review(
     subresource: Option<String>,
     verb: Option<String>,
     version: Option<String>,
+    field_selector: Option<FieldSelectorAttributes>,
+    label_selector: Option<LabelSelectorAttributes>,
 ) -> SelfSubjectAccessReview {
     SelfSubjectAccessReview {
         metadata: ObjectMeta::default(),
@@ -29,6 +32,8 @@ fn create_self_subject_access_review(
                 subresource,
                 verb,
                 version,
+                field_selector,
+                label_selector,
             }),
             non_resource_attributes: None,
         },
@@ -62,7 +67,7 @@ struct Cli {
 }
 
 impl Cli {
-    fn parse_resource(&self) -> anyhow::Result<(String, String, String)> {
+    fn parse_resource(&self) -> anyhow::Result<(String, String, Option<String>)> {
         let resname = self
             .resource
             .split('/')
@@ -87,7 +92,11 @@ impl Cli {
             .split_first()
             .ok_or(anyhow!("Can't split resource and group: {}", self.resource))?;
         let group = group.join(".");
-        return Ok((resource.clone(), name, group));
+        return Ok((
+            resource.clone(),
+            name,
+            if group != "" { Some(group) } else { None },
+        ));
     }
 }
 
@@ -130,12 +139,14 @@ async fn main() -> anyhow::Result<()> {
     };
 
     let sar_data = create_self_subject_access_review(
-        Some(group),
+        group,
         Some(name),
         ns,
         Some(resource),
         None,
         Some(args.verb.clone()),
+        None,
+        None,
         None,
     );
     let sar: Api<SelfSubjectAccessReview> = Api::all(client);

@@ -820,9 +820,9 @@ dependencies = [
 
 [[package]]
 name = "k8s-openapi"
-version = "0.23.0"
+version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c8847402328d8301354c94d605481f25a6bdc1ed65471fd96af8eca71141b13"
+checksum = "2c75b990324f09bef15e791606b7b7a296d02fc88a344f6eba9390970a870ad5"
 dependencies = [
  "base64 0.22.1",
  "chrono",
@@ -833,9 +833,9 @@ dependencies = [
 
 [[package]]
 name = "kube"
-version = "0.97.0"
+version = "0.99.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5fd2596428f922f784ca43907c449f104d69055c811135684474143736c67ae"
+checksum = "9a4eb20010536b48abe97fec37d23d43069bcbe9686adcf9932202327bc5ca6e"
 dependencies = [
  "k8s-openapi",
  "kube-client",
@@ -844,9 +844,9 @@ dependencies = [
 
 [[package]]
 name = "kube-client"
-version = "0.97.0"
+version = "0.99.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d539b6493d162ae5ab691762be972b6a1c20f6d8ddafaae305c0e2111b589d99"
+checksum = "7fc2ed952042df20d15ac2fe9614d0ec14b6118eab89633985d4b36e688dccf1"
 dependencies = [
  "base64 0.22.1",
  "bytes",
@@ -868,7 +868,6 @@ dependencies = [
  "kube-core",
  "pem",
  "rustls",
- "rustls-pemfile",
  "secrecy",
  "serde",
  "serde_json",
@@ -883,9 +882,9 @@ dependencies = [
 
 [[package]]
 name = "kube-core"
-version = "0.97.0"
+version = "0.99.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98a87cc0046cf6b62cbb63ae1fbc366ee8ba29269f575289679473754ff5d7a7"
+checksum = "ff0d0793db58e70ca6d689489183816cb3aa481673e7433dc618cf7e8007c675"
 dependencies = [
  "chrono",
  "form_urlencoded",
@@ -899,13 +898,14 @@ dependencies = [
 
 [[package]]
 name = "kube-derive"
-version = "0.97.0"
+version = "0.99.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65576922713e6154a89b5a8d2747adca15725b90fa64fc2b828774bf96d6acd8"
+checksum = "c562f58dc9f7ca5feac8a6ee5850ca221edd6f04ce0dd2ee873202a88cd494c9"
 dependencies = [
  "darling",
  "proc-macro2",
  "quote",
+ "serde",
  "serde_json",
  "syn",
 ]
@@ -1316,7 +1316,6 @@ dependencies = [
  "aws-lc-rs",
  "log",
  "once_cell",
- "ring",
  "rustls-pki-types",
  "rustls-webpki",
  "subtle",

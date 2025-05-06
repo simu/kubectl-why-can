@@ -119,16 +119,14 @@ jobs:
           git fetch origin +refs/tags/*:refs/tags/*
           # Extract tag message
           TAG_MSG=$(git tag -n --format='%(contents:body)' ${GITHUB_REF##refs/tags/} | tr -d '\r')
-          # Escape literal % and newlines (\n, \r) for github actions output
-          TAG_MSG=${TAG_MSG//'%'/%25}
-          TAG_MSG=${TAG_MSG//$'\n'/%0A}
           # Join multiple lines belonging to the same paragraph for GitHub
-          # markdown.
-          # Paragraph breaks should be %0A%0A. We replace single line breaks
-          # with a space with sed.
-          TAG_MSG=$(echo ${TAG_MSG} |sed 's/\([^A]\)%0A\([^%]\)/\1 \2/g')
+          # markdown. Paragraph breaks should be '\n\n'. We replace single
+          # line breaks with a space with sed.
+          TAG_MSG=$(echo ${TAG_MSG} |sed 's/\([^\n]\)\n\([^\n]\)/\1 \2/g')
           # Set action output `messsage`
-          echo "message=${TAG_MSG}" >> $GITHUB_OUTPUT
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          echo "${TAG_MSG}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         env:
           GITHUB_REF: ${{ github.ref }}
       - name: Download all binaries

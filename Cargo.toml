@@ -16,6 +16,6 @@ kube = { version = "0.97.0", default-features = false, features = ["client", "ru
 kube-derive = { version = "0.97.0"}
 tokio = { version = "1.37.0", features = ["full"] }
 tokio-rustls = "0.26.0"
-tower = { version = "0.4.13", features = ["limit"] }
+tower = { version = "0.5.0", features = ["limit"] }
 tower-http = { version = "0.5.2", features = ["trace", "decompression-gzip"] }
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }

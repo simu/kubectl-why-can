@@ -895,7 +895,7 @@ dependencies = [
  "thiserror 2.0.12",
  "tokio",
  "tokio-util",
- "tower 0.5.2",
+ "tower",
  "tower-http 0.6.6",
  "tracing",
 ]
@@ -943,7 +943,7 @@ dependencies = [
  "kube-derive",
  "tokio",
  "tokio-rustls",
- "tower 0.4.13",
+ "tower",
  "tower-http 0.5.2",
  "tracing-subscriber",
 ]
@@ -1727,21 +1727,6 @@ dependencies = [
  "futures-sink",
  "pin-project-lite",
  "tokio",
-]
-
-[[package]]
-name = "tower"
-version = "0.4.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8fa9be0de6cf49e536ce1851f987bd21a43b771b09473c3549a6c853db37c1c"
-dependencies = [
- "futures-core",
- "pin-project-lite",
- "tokio",
- "tokio-util",
- "tower-layer",
- "tower-service",
- "tracing",
 ]
 
 [[package]]

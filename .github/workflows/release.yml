@@ -17,7 +17,7 @@ jobs:
           - target: aarch64-unknown-linux-musl
             command: cross
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         id: toolchain
@@ -30,7 +30,7 @@ jobs:
           curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
           cargo binstall --no-confirm cross
       - name: Cache rust build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             target
@@ -41,7 +41,7 @@ jobs:
       - name: Build binary
         run: ${{ matrix.command }} build --release --locked --target ${{ matrix.target }}
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: kubectl-why-can-${{ matrix.target }}
           path: target/${{ matrix.target }}/release/kubectl-why-can
@@ -54,14 +54,14 @@ jobs:
           - x86_64-apple-darwin
           - aarch64-apple-darwin
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         id: toolchain
         with:
           targets: ${{ matrix.target }}
       - name: Cache rust build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             target
@@ -70,7 +70,7 @@ jobs:
       - name: Build binary
         run: cargo build --release --locked --target ${{ matrix.target }}
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: kubectl-why-can-${{ matrix.target }}
           path: target/${{ matrix.target }}/release/kubectl-why-can
@@ -83,7 +83,7 @@ jobs:
       - build-macos
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: "0"
       - name: Extract Git version from ref
@@ -132,7 +132,7 @@ jobs:
         env:
           GITHUB_REF: ${{ github.ref }}
       - name: Download all binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: binaries
       - name: Finalize binaries for release

@@ -30,7 +30,7 @@ jobs:
           curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
           cargo binstall --no-confirm cross
       - name: Cache rust build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             target
@@ -61,7 +61,7 @@ jobs:
         with:
           targets: ${{ matrix.target }}
       - name: Cache rust build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             target

@@ -11,7 +11,7 @@ jobs:
     outputs:
       version: ${{ steps.genversion.outputs.version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: "0"
       - name: Generate package version from Git tag
@@ -30,7 +30,7 @@ jobs:
           - target: aarch64-unknown-linux-musl
             command: cross
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: "0"
       - name: Install Rust toolchain
@@ -80,7 +80,7 @@ jobs:
           - x86_64-apple-darwin
           - aarch64-apple-darwin
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: "0"
       - name: Install Rust toolchain
